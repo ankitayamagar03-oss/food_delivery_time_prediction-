@@ -11,38 +11,39 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# 1. Load your trained model and encoders
-# Note: Ensure these files are in the same folder as this script
-model = joblib.load("food_delivery_model.pkl") 
-encoder = joblib.load("label_encoder_food.pkl") 
+# 1. Load your trained model and the list of columns used during training
+model = joblib.load("food_delivery_time _prediction_xgb_model.pkl") 
+model_columns = joblib.load("model_columns.pkl") # Save this during training!
 
 st.title("🍔 Food Delivery Time Predictor")
-st.write("Enter the details below to estimate delivery time.")
 
 # 2. User Inputs
 age = st.number_input("Delivery Person Age", 18, 60, value=25)
 ratings = st.slider("Delivery Person Rating", 1.0, 5.0, step=0.1, value=4.5)
+order_type = st.selectbox("Type of Order", ['Snack', 'Meal', 'Drinks', 'Buffet'])
+vehicle_type = st.selectbox("Type of Vehicle", ['motorcycle', 'scooter', 'electric_scooter'])
 
-# Assuming your encoder was a dictionary of LabelEncoders for these columns
-order_type = st.selectbox("Type of Order", encoder["Type_of_order"].classes_)
-vehicle_type = st.selectbox("Type of Vehicle", encoder["Type_of_vehicle"].classes_)
-
-# 3. Create DataFrame (Column names must match your training data exactly!)
-input_data = pd.DataFrame({
-    "Delivery_person_Age": [age],
-    "Delivery_person_Ratings": [ratings],
-    "Type_of_order": [order_type],
-    "Type_of_vehicle": [vehicle_type]
-})
-
-# 4. Prediction Logic
+# 3. Create DataFrame and Pre-process
 if st.button("Predict Delivery Time"):
-    # Apply encoding to the categorical columns
-    for col in ["Type_of_order", "Type_of_vehicle"]:
-        input_data[col] = encoder[col].transform(input_data[col])
+    # Create input df
+    input_df = pd.DataFrame({
+        "Delivery_person_Age": [age],
+        "Delivery_person_Ratings": [ratings],
+        "Type_of_order": [order_type],
+        "Type_of_vehicle": [vehicle_type]
+    })
     
-    # Make prediction
-    prediction = model.predict(input_data)
+    # One-Hot Encoding (Must match training process)
+    input_df = pd.get_dummies(input_df)
     
-    # Show result
+    # Add missing columns with 0s so it matches the model's expected input
+    for col in model_columns:
+        if col not in input_df.columns:
+            input_df[col] = 0
+            
+    # Ensure columns are in the same order as training
+    input_df = input_df[model_columns]
+    
+    # 4. Predict
+    prediction = model.predict(input_df)
     st.success(f"🚚 Estimated Delivery Time: {round(prediction[0], 2)} minutes")
