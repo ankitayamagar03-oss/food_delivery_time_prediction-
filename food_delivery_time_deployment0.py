@@ -14,43 +14,41 @@ import joblib
 model = joblib.load("food_delivery_time _prediction_xgb_model.pkl")
 label_encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
 
-
-
-
 st.title("Food Delivery Time Prediction")
 
 # Inputs
 age = st.number_input("Enter delivery person age", 18, 60)
-
 ratings = st.slider("Delivery person rating", 1.0, 5.0, 4.0, 0.1)
 
-Type_of_order= st.selectbox(
-    "Select type of order",
-    encoder["Type_of_order"].classes_
-)
+# Options (manual list to avoid encoder key error)
+order_options = ["Snack", "Meal", "Drinks", "Buffet"]
+vehicle_options = ["Motorcycle", "Scooter", "Electric Scooter", "Bicycle"]
 
-vehicle_type = st.selectbox(
-    "Select type of vehicle",
-    encoder["Type_of_vehicle"].classes_
-)
+order_type = st.selectbox("Select type of order", order_options)
+vehicle_type = st.selectbox("Select type of vehicle", vehicle_options)
 
-# Create dataframe
-df = pd.DataFrame({
-    "Delivery_person_Age":[age],
-    "Delivery_person_Ratings":[ratings],
-    "Type_of_order":[order_type],
-    "Type_of_vehicle":[vehicle_type]
-})
+# Encode
+order_encoded = encoder['Type_of_order'].transform([order_type])[0]
+vehicle_encoded = encoder['Type_of_vehicle'].transform([vehicle_type])[0]
 
 # Prediction
 if st.button("Predict Delivery Time"):
 
-    df["Type_of_order"] = encoder["Type_of_order"].transform(df["Type_of_order"])
-    df["Type_of_vehicle"] = encoder["Type_of_vehicle"].transform(df["Type_of_vehicle"])
+    input_data = pd.DataFrame({
+        "Delivery_person_Age":[age],
+        "Delivery_person_Ratings":[ratings],
+        "Type_of_order":[order_encoded],
+        "Type_of_vehicle":[vehicle_encoded]
+    })
 
-    prediction = model.predict(df)
+    prediction = model.predict(input_data)
 
     st.success(f"Estimated Delivery Time: {prediction[0]:.2f} minutes")
+
+
+
+
+
 
 
 
