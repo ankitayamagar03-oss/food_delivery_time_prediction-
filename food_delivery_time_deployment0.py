@@ -62,3 +62,69 @@ if st.button("Predict Delivery Time"):
     prediction = model.predict(input_data)
 
     st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
+import streamlit as st
+import pandas as pd
+import joblib
+import os
+
+st.title("🍔 Food Delivery Time Predictor")
+
+# File paths
+model_path = "food_delivery_time_prediction_xgb_model.pkl"
+encoder_path = "label_encoder_food_deliverytime_prediction.pkl"
+
+# Check if files exist
+if not os.path.exists(model_path) or not os.path.exists(encoder_path):
+    st.error("❌ Model or encoder file not found. Please upload the .pkl files to the project folder.")
+else:
+    # Load files
+    model = joblib.load(model_path)
+    encoder = joblib.load(encoder_path)
+
+    st.write("Enter the details below to estimate delivery time.")
+
+    # Inputs
+    age = st.number_input("Delivery Person Age", 18, 60, value=25)
+
+    ratings = st.slider(
+        "Delivery Person Rating",
+        min_value=1.0,
+        max_value=5.0,
+        step=0.1,
+        value=4.5
+    )
+
+    order_type = st.selectbox(
+        "Type of Order",
+        encoder["Type_of_order"].classes_
+    )
+
+    vehicle_type = st.selectbox(
+        "Type of Vehicle",
+        encoder["Type_of_vehicle"].classes_
+    )
+
+    # Prediction button
+    if st.button("Predict Delivery Time"):
+
+        # Encode values
+        order_encoded = encoder["Type_of_order"].transform([order_type])[0]
+        vehicle_encoded = encoder["Type_of_vehicle"].transform([vehicle_type])[0]
+
+        # Create dataframe
+        input_data = pd.DataFrame([[
+            age,
+            ratings,
+            order_encoded,
+            vehicle_encoded
+        ]], columns=[
+            "Delivery_person_Age",
+            "Delivery_person_Ratings",
+            "Type_of_order",
+            "Type_of_vehicle"
+        ])
+
+        # Prediction
+        prediction = model.predict(input_data)
+
+        st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
