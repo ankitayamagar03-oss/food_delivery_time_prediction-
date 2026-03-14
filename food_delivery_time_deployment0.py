@@ -31,7 +31,7 @@ if st.button("Predict Delivery Time"):
         "Type_of_order": [order_type],
         "Type_of_vehicle": [vehicle_type]
     })
-    t"):
+
     # 4. Transform the text into numbers using the encoder
     for col in ["Type_of_order", "Type_of_vehicle"]:
         df[col] = encoder[col].transform(df[col])
