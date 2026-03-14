@@ -11,8 +11,8 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-model = joblib.load("food_delivery_model.pkl")
-encoder = joblib.load("label_encoder_food.pkl")
+model = joblib.load("food_delivery_time_predictionmodel.pkl")
+encoder = joblib.load("label_encoder_food_delivery_time_prediction.pkl")
 
 st.title("🍔 Food Delivery Time Predictor")
 st.write("Enter the details below to estimate delivery time.")
