@@ -27,12 +27,10 @@ ratings = st.slider(
     step=0.1
 )
 
-
-# Options for dropdown
+# Options (same style as house price project)
 order_options = ["Snack", "Meal", "Drinks", "Buffet"]
 vehicle_options = ["Motorcycle", "Scooter", "Electric Scooter", "Bicycle"]
 
-# Select boxes
 order_type = st.selectbox("Select type of Order", order_options)
 vehicle_type = st.selectbox("Select type of Vehicle", vehicle_options)
 
@@ -40,6 +38,7 @@ vehicle_type = st.selectbox("Select type of Vehicle", vehicle_options)
 order_encoded = label_encoder['Type_of_order'].transform([order_type])[0]
 vehicle_encoded = label_encoder['Type_of_vehicle'].transform([vehicle_type])[0]
 
+# Prediction
 if st.button("Predict Delivery Time"):
 
     input_data = pd.DataFrame([[ 
@@ -54,9 +53,11 @@ if st.button("Predict Delivery Time"):
         "Type_of_vehicle"
     ])
 
-    prediction = model.predict(input_data)
-
-    st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
+    try:
+        prediction = model.predict(input_data)
+        st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
+    except Exception as e:
+        st.error(f"Error in prediction: {e}")
 
 
     
