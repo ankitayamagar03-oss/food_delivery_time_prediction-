@@ -33,10 +33,14 @@ order_type = st.selectbox(
     encoder["Type_of_Order"].classes_
 )
 
+order_options = ["Snack", "Meal", "Drinks", "Buffet"]
+
 vehicle_type = st.selectbox(
     "Select type of vehicle",
     encoder["Type_of_vehicle"].classes_
 )
+
+vehicle_options = ["Motorcycle", "Scooter", "Bicycle", "Electric Scooter"]
 
 # Create dataframe
 df = pd.DataFrame({
