@@ -13,7 +13,7 @@ import joblib
 
 # 1. Load your trained model and the list of columns used during training
 model = joblib.load("food_delivery_time _prediction_xgb_model.pkl") 
-model_columns = joblib.load("model_columns.pkl") # Save this during training!
+encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl") 
 
 st.title("🍔 Food Delivery Time Predictor")
 
