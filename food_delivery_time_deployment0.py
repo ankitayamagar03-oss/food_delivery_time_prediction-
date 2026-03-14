@@ -25,7 +25,7 @@ vehicle_type = st.selectbox("Type of Vehicle", ['motorcycle', 'scooter', 'electr
 # 3. Create DataFrame and Pre-process
 if st.button("Predict Delivery Time"):
     # Create input df
-    input_df = pd.DataFrame({
+    df = pd.DataFrame({
         "Delivery_person_Age": [age],
         "Delivery_person_Ratings": [ratings],
         "Type_of_order": [order_type],
