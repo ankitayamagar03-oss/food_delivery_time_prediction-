@@ -24,7 +24,7 @@ age = st.number_input("Enter delivery person age", 18, 60)
 
 ratings = st.slider("Delivery person rating", 1.0, 5.0, 4.0, 0.1)
 
-order_type = st.selectbox(
+Type_of_order= st.selectbox(
     "Select type of order",
     encoder["Type_of_order"].classes_
 )
