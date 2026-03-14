@@ -12,7 +12,7 @@ import pandas as pd
 import joblib
 
 # Load model and encoders
-model = joblib.load("food_delivery_time_prediction_xgb_model.pkl")
+model = joblib.load("food_delivery_time _prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
 
 # App title
