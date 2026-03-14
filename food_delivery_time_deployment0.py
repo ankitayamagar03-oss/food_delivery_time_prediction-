@@ -35,9 +35,8 @@ vehicle_options = ["Motorcycle", "Scooter", "Electric Scooter", "Bicycle"]
 order_type = st.selectbox("Select type of Order", order_options)
 vehicle_type = st.selectbox("Select type of Vehicle", vehicle_options)
 
-# Encode categorical values
-order_encoded = label_encoder['Type_of_Order'].transform([order_type])[0]
-vehicle_encoded = label_encoder['Type_of_vehicle'].transform([vehicle_type])[0]
+order_encoded = label_encoder.get('Type_of_order').transform([order_type])[0]
+vehicle_encoded = label_encoder.get('Type_of_vehicle').transform([vehicle_type])[0]
 
 # Prediction button
 if st.button("Predict Delivery Time"):
