@@ -11,34 +11,54 @@ import streamlit as st
 import pandas as pd
 import joblib
 
+# Load model and encoders
 model = joblib.load("food_delivery_time_prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
 
-st.title("🍔 Food Delivery Time Predictor")
-st.write("Enter the details below to estimate delivery time.")
+# App title
+st.title("🍔 Food Delivery Time Prediction")
 
-age = st.number_input("Delivery Person Age", 18, 60, value=25)
-ratings = st.slider("Delivery Person Rating", 1.0, 5.0, step=0.1, value=4.5)
+st.write("Fill the details below to estimate delivery time")
 
-order_type = st.selectbox("Type of Order", encoder["Type_of_order"].classes_)
-vehicle_type = st.selectbox("Type of Vehicle", encoder["Type_of_vehicle"].classes_)
+# User inputs
+age = st.number_input("Delivery Person Age", 18, 60, 25)
 
+ratings = st.slider(
+    "Delivery Person Rating",
+    1.0, 5.0, 4.5, 0.1
+)
 
-input_data = pd.DataFrame({
-    "Delivery_person_Age": [age],
-    "Delivery_person_Ratings": [ratings],
-    "Type_of_order": [order_type],
-    "Type_of_vehicle": [vehicle_type]
-})
+order_type = st.selectbox(
+    "Type of Order",
+    encoder["Type_of_order"].classes_
+)
 
+vehicle_type = st.selectbox(
+    "Type of Vehicle",
+    encoder["Type_of_vehicle"].classes_
+)
 
+# Prediction button
 if st.button("Predict Delivery Time"):
 
-    for col in ["Type_of_order", "Type_of_vehicle"]:
-        input_data[col] = encoder[col].transform(input_data[col])
+    # Encode categorical inputs
+    order_type_encoded = encoder["Type_of_order"].transform([order_type])[0]
+    vehicle_type_encoded = encoder["Type_of_vehicle"].transform([vehicle_type])[0]
 
+    # Create input dataframe
+    input_data = pd.DataFrame([[
+        age,
+        ratings,
+        order_type_encoded,
+        vehicle_type_encoded
+    ]], columns=[
+        "Delivery_person_Age",
+        "Delivery_person_Ratings",
+        "Type_of_order",
+        "Type_of_vehicle"
+    ])
 
+    # Predict
     prediction = model.predict(input_data)
 
-    # Show result
-    st.success(f"🚚 Estimated Delivery Time: {round(prediction[0], 2)} minutes")
+    st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
