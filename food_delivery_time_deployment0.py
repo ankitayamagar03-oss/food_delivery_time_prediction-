@@ -14,27 +14,31 @@ import joblib
 model = joblib.load("food_delivery_time _prediction_xgb_model.pkl")
 label_encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
 
-st.title("🍔 Food Delivery Time Prediction Model")
+st.title("🍔 Food Delivery Time Prediction")
+
+# Show encoder keys (to avoid key errors)
+st.write("Encoder keys:", label_encoder.keys())
 
 # Numeric inputs
-age = st.number_input("Enter delivery person age", min_value=18, max_value=60, value=25)
+age = st.number_input("Enter delivery person age", 18, 60, 25)
 
 ratings = st.slider(
     "Delivery person rating",
-    min_value=1.0,
-    max_value=5.0,
-    value=4.0,
-    step=0.1
+    1.0, 5.0, 4.0, 0.1
 )
 
-# Options (same style as house price project)
-order_options = ["Snack", "Meal", "Drinks", "Buffet"]
-vehicle_options = ["Motorcycle", "Scooter", "Electric Scooter", "Bicycle"]
+# Dropdown options from encoder (safer)
+order_type = st.selectbox(
+    "Select type of Order",
+    label_encoder['Type_of_order'].classes_
+)
 
-order_type = st.selectbox("Select type of Order", order_options)
-vehicle_type = st.selectbox("Select type of Vehicle", vehicle_options)
+vehicle_type = st.selectbox(
+    "Select type of Vehicle",
+    label_encoder['Type_of_vehicle'].classes_
+)
 
-# Encode categorical values
+# Encode
 order_encoded = label_encoder['Type_of_order'].transform([order_type])[0]
 vehicle_encoded = label_encoder['Type_of_vehicle'].transform([vehicle_type])[0]
 
@@ -53,11 +57,12 @@ if st.button("Predict Delivery Time"):
         "Type_of_vehicle"
     ])
 
-    try:
-        prediction = model.predict(input_data)
-        st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
-    except Exception as e:
-        st.error(f"Error in prediction: {e}")
+    prediction = model.predict(input_data)
+
+    st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
+
+
+
 
 
     
