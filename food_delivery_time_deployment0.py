@@ -32,16 +32,6 @@ if st.button("Predict Delivery Time"):
         "Type_of_vehicle": [vehicle_type]
     })
     
-    # One-Hot Encoding (Must match training process)
-    input_df = pd.get_dummies(input_df)
-    
-    # Add missing columns with 0s so it matches the model's expected input
-    for col in model_columns:
-        if col not in input_df.columns:
-            input_df[col] = 0
-            
-    # Ensure columns are in the same order as training
-    input_df = input_df[model_columns]
     
     # 4. Predict
     prediction = model.predict(input_df)
