@@ -27,7 +27,7 @@ ratings = st.slider(
     step=0.1
 )
 
-order_type = st.selectbox("Select type of order", encoder["Type_of_order"].classes_)
+order_type = st.selectbox("Select type of order", encoder["Type_of_Order"].classes_)
 
 vehicle_type = st.selectbox("Select type of vehicle", encoder["Type_of_vehicle"].classes_)
 
