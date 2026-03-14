@@ -37,8 +37,8 @@ if st.button("Predict Delivery Time"):
     input_data = pd.DataFrame({
         "Delivery_person_Age":[age],
         "Delivery_person_Ratings":[ratings],
-        "Type_of_order":[order_encoded],
-        "Type_of_vehicle":[vehicle_encoded]
+        "Type_of_order":[Type_of_order],
+        "Type_of_vehicle":[Type_of_vehicle]
     })
 
     prediction = model.predict(input_data)
