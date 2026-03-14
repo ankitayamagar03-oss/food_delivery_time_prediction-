@@ -37,7 +37,6 @@ if st.button("Predict Delivery Time"):
     input_df = pd.get_dummies(input_df)
     
     # Add missing columns with 0s so it matches the model's expected input
-    for col in model_columns:
         if col not in input_df.columns:
             input_df[col] = 0
             
