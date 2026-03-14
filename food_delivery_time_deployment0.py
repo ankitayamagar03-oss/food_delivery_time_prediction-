@@ -11,7 +11,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-model = joblib.load("food_delivery_time_prediction_model.pkl")
+model = joblib.load("food_delivery_time_prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_food_delivery_time_prediction.pkl")
 
 st.title("🍔 Food Delivery Time Predictor")
