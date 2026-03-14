@@ -30,7 +30,7 @@ ratings = st.slider(
 
 order_type = st.selectbox("Select type of Order",encoder["Type_of_order"].classes_)
 
-order_options = ["Snack", "Meal", "Drinks", "Buffet"]
+Order_options = ["Snack", "Meal", "Drinks", "Buffet"]
 
 vehicle_type = st.selectbox("Select type of vehicle",encoder["Type_of_vehicle"].classes_)
 
