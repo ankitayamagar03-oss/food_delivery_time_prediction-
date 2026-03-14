@@ -12,39 +12,47 @@ import pandas as pd
 import joblib
 
 # Load model and encoder
-model = joblib.load("food_delivery_time _prediction_xgb_model.pkl")
+model = joblib.load("food_delivery_time_prediction_xgb_model.pkl")
 encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
 
-st.title("Food Delivery Time Prediction Model")
+st.title("🍔 Food Delivery Time Prediction Model")
 
+# Inputs
 age = st.number_input("Enter delivery person age", 18, 60)
 
 ratings = st.slider(
-    "Select delivery person rating",
+    "Delivery person rating",
     min_value=1.0,
     max_value=5.0,
     value=4.0,
     step=0.1
 )
 
-ratings = st.slider("Delivery person rating",1.0,5.0,4.0,0.1)
+order_type = st.selectbox(
+    "Select type of order",
+    encoder["Type_of_Order"].classes_
+)
 
-order_type = st.selectbox("Select type of order", encoder["Type_of_Order"].classes_)
+vehicle_type = st.selectbox(
+    "Select type of vehicle",
+    encoder["Type_of_vehicle"].classes_
+)
 
-vehicle_type = st.selectbox("Select type of vehicle", encoder["Type_of_vehicle"].classes_)
-
+# Create dataframe
 df = pd.DataFrame({
     "Delivery_person_Age": [age],
     "Delivery_person_Ratings": [ratings],
-    "Type_of_order": [order_type],
+    "Type_of_Order": [order_type],
     "Type_of_vehicle": [vehicle_type]
 })
 
+# Prediction
 if st.button("Predict Delivery Time"):
     
+    # Encode categorical columns
     for col in encoder:
         df[col] = encoder[col].transform(df[col])
 
     prediction = model.predict(df)
 
-    st.success(f"Predicted Delivery Time: {prediction[0]:.2f} minutes")
+    st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
