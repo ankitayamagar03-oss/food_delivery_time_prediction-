@@ -31,7 +31,7 @@ ratings = st.slider(
 order_options = ["Snack", "Meal", "Drinks", "Buffet"]
 vehicle_options = ["Motorcycle", "Scooter", "Bicycle", "Electric Scooter"]
 
-order_type = st.selectbox("Select type of Order",encoder["order_type"].classes_)
+oorder_type = st.selectbox("Select type of Order", encoder["Type_of_Order"].classes_)
 vehicle_type = st.selectbox("Select type of vehicle",encoder["Type_of_vehicle"].classes_)
 
 # Create dataframe
