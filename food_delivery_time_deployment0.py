@@ -11,120 +11,38 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load model and encoders
-model = joblib.load("food_delivery_time _prediction_xgb_model.pkl")
-encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
-
-# App title
-st.title("🍔 Food Delivery Time Prediction")
-
-st.write("Fill the details below to estimate delivery time")
-
-# User inputs
-age = st.number_input("Delivery Person Age", 18, 60, 25)
-
-ratings = st.slider(
-    "Delivery Person Rating",
-    1.0, 5.0, 4.5, 0.1
-)
-
-order_type = st.selectbox(
-    "Type of Order",
-    encoder["Type_of_order"].classes_
-)
-
-vehicle_type = st.selectbox(
-    "Type of Vehicle",
-    encoder["Type_of_vehicle"].classes_
-)
-
-# Prediction button
-if st.button("Predict Delivery Time"):
-
-    # Encode categorical inputs
-    order_type_encoded = encoder["Type_of_order"].transform([order_type])[0]
-    vehicle_type_encoded = encoder["Type_of_vehicle"].transform([vehicle_type])[0]
-
-    # Create input dataframe
-    input_data = pd.DataFrame([[
-        age,
-        ratings,
-        order_type_encoded,
-        vehicle_type_encoded
-    ]], columns=[
-        "Delivery_person_Age",
-        "Delivery_person_Ratings",
-        "Type_of_order",
-        "Type_of_vehicle"
-    ])
-
-    # Predict
-    prediction = model.predict(input_data)
-
-    st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
-import streamlit as st
-import pandas as pd
-import joblib
-import os
+# 1. Load your trained model and encoders
+# Note: Ensure these files are in the same folder as this script
+model = joblib.load("food_delivery_model.pkl") 
+encoder = joblib.load("label_encoder_food.pkl") 
 
 st.title("🍔 Food Delivery Time Predictor")
+st.write("Enter the details below to estimate delivery time.")
 
-# File paths
-model_path = "food_delivery_time_prediction_xgb_model.pkl"
-encoder_path = "label_encoder_food_deliverytime_prediction.pkl"
+# 2. User Inputs
+age = st.number_input("Delivery Person Age", 18, 60, value=25)
+ratings = st.slider("Delivery Person Rating", 1.0, 5.0, step=0.1, value=4.5)
 
-# Check if files exist
-if not os.path.exists(model_path) or not os.path.exists(encoder_path):
-    st.error("❌ Model or encoder file not found. Please upload the .pkl files to the project folder.")
-else:
-    # Load files
-    model = joblib.load(model_path)
-    encoder = joblib.load(encoder_path)
+# Assuming your encoder was a dictionary of LabelEncoders for these columns
+order_type = st.selectbox("Type of Order", encoder["Type_of_order"].classes_)
+vehicle_type = st.selectbox("Type of Vehicle", encoder["Type_of_vehicle"].classes_)
 
-    st.write("Enter the details below to estimate delivery time.")
+# 3. Create DataFrame (Column names must match your training data exactly!)
+input_data = pd.DataFrame({
+    "Delivery_person_Age": [age],
+    "Delivery_person_Ratings": [ratings],
+    "Type_of_order": [order_type],
+    "Type_of_vehicle": [vehicle_type]
+})
 
-    # Inputs
-    age = st.number_input("Delivery Person Age", 18, 60, value=25)
-
-    ratings = st.slider(
-        "Delivery Person Rating",
-        min_value=1.0,
-        max_value=5.0,
-        step=0.1,
-        value=4.5
-    )
-
-    order_type = st.selectbox(
-        "Type of Order",
-        encoder["Type_of_order"].classes_
-    )
-
-    vehicle_type = st.selectbox(
-        "Type of Vehicle",
-        encoder["Type_of_vehicle"].classes_
-    )
-
-    # Prediction button
-    if st.button("Predict Delivery Time"):
-
-        # Encode values
-        order_encoded = encoder["Type_of_order"].transform([order_type])[0]
-        vehicle_encoded = encoder["Type_of_vehicle"].transform([vehicle_type])[0]
-
-        # Create dataframe
-        input_data = pd.DataFrame([[
-            age,
-            ratings,
-            order_encoded,
-            vehicle_encoded
-        ]], columns=[
-            "Delivery_person_Age",
-            "Delivery_person_Ratings",
-            "Type_of_order",
-            "Type_of_vehicle"
-        ])
-
-        # Prediction
-        prediction = model.predict(input_data)
-
-        st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
+# 4. Prediction Logic
+if st.button("Predict Delivery Time"):
+    # Apply encoding to the categorical columns
+    for col in ["Type_of_order", "Type_of_vehicle"]:
+        input_data[col] = encoder[col].transform(input_data[col])
+    
+    # Make prediction
+    prediction = model.predict(input_data)
+    
+    # Show result
+    st.success(f"🚚 Estimated Delivery Time: {round(prediction[0], 2)} minutes")
