@@ -28,8 +28,8 @@ order_type = st.selectbox("Select type of order", order_options)
 vehicle_type = st.selectbox("Select type of vehicle", vehicle_options)
 
 # Encode
-order_encoded = encode['Type_of_order'].transform([order_type])[0]
-vehicle_encoded = encode['Type_of_vehicle'].transform([vehicle_type])[0]
+Type_of_order_encoded = encoded['Type_of_order'].transform([ype_of_order])[0]
+Type_of_vehicle_encoded = encoded['Type_of_vehicle'].transform(['Type_of_vehicle])[0]
 
 # Prediction
 if st.button("Predict Delivery Time"):
