@@ -31,8 +31,14 @@ if st.button("Predict Delivery Time"):
         "Type_of_order": [order_type],
         "Type_of_vehicle": [vehicle_type]
     })
+    t"):
+    # 4. Transform the text into numbers using the encoder
+    for col in ["Type_of_order", "Type_of_vehicle"]:
+        df[col] = encoder[col].transform(df[col])
+    
+    # 5. Predict
+    prediction = model.predict(df)
+    st.success(f"Predicted Time: {prediction[0]:.2f} mins")
     
     
-    # 4. Predict
-    prediction = model.predict(input_df)
-    st.success(f"🚚 Estimated Delivery Time: {round(prediction[0], 2)} minutes")
+    
