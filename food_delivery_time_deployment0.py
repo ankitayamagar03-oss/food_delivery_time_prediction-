@@ -30,13 +30,13 @@ ratings = st.slider(
 # Dropdown options from encoder (safer)
 order_type = st.selectbox(
     "Select type of Order",
-    label_encoder['Type_of_order'].classes_
-)
+    label_encoder['Type_of_order'].classes_)
+
 
 vehicle_type = st.selectbox(
     "Select type of Vehicle",
-    label_encoder['Type_of_vehicle'].classes_
-)
+    label_encoder['Type_of_vehicle'].classes_)
+
 
 # Encode
 order_encoded = label_encoder['Type_of_order'].transform([order_type])[0]
