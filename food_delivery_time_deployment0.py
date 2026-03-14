@@ -14,52 +14,43 @@ import joblib
 model = joblib.load("food_delivery_time _prediction_xgb_model.pkl")
 label_encoder = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
 
-st.title("🍔 Food Delivery Time Prediction")
 
-# Show encoder keys (to avoid key errors)
-st.write("Encoder keys:", label_encoder.keys())
 
-# Numeric inputs
-age = st.number_input("Enter delivery person age", 18, 60, 25)
 
-ratings = st.slider(
-    "Delivery person rating",
-    1.0, 5.0, 4.0, 0.1
+st.title("Food Delivery Time Prediction")
+
+# Inputs
+age = st.number_input("Enter delivery person age", 18, 60)
+
+ratings = st.slider("Delivery person rating", 1.0, 5.0, 4.0, 0.1)
+
+order_type = st.selectbox(
+    "Select type of order",
+    encoder["Type_of_order"].classes_
 )
 
-# Dropdown options from encoder (safer)
-order_type = st.selectbox(
-    "Select type of Order",
-    label_encoder['Type_of_order'].classes_)
-
-
 vehicle_type = st.selectbox(
-    "Select type of Vehicle",
-    label_encoder['Type_of_vehicle'].classes_)
+    "Select type of vehicle",
+    encoder["Type_of_vehicle"].classes_
+)
 
-
-# Encode
-order_encoded = label_encoder['Type_of_order'].transform([order_type])[0]
-vehicle_encoded = label_encoder['Type_of_vehicle'].transform([vehicle_type])[0]
+# Create dataframe
+df = pd.DataFrame({
+    "Delivery_person_Age":[age],
+    "Delivery_person_Ratings":[ratings],
+    "Type_of_order":[order_type],
+    "Type_of_vehicle":[vehicle_type]
+})
 
 # Prediction
 if st.button("Predict Delivery Time"):
 
-    input_data = pd.DataFrame([[ 
-        age,
-        ratings,
-        order_encoded,
-        vehicle_encoded
-    ]], columns=[
-        "Delivery_person_Age",
-        "Delivery_person_Ratings",
-        "Type_of_order",
-        "Type_of_vehicle"
-    ])
+    df["Type_of_order"] = encoder["Type_of_order"].transform(df["Type_of_order"])
+    df["Type_of_vehicle"] = encoder["Type_of_vehicle"].transform(df["Type_of_vehicle"])
 
-    prediction = model.predict(input_data)
+    prediction = model.predict(df)
 
-    st.success(f"🚚 Estimated Delivery Time: {prediction[0]:.2f} minutes")
+    st.success(f"Estimated Delivery Time: {prediction[0]:.2f} minutes")
 
 
 
