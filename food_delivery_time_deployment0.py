@@ -7,6 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1JI6j1fesHEifI8vVsGjCHAmnt34NvMxp
     """
 
+```python
 import streamlit as st
 import pandas as pd
 import joblib
@@ -14,12 +15,9 @@ import joblib
 # Load trained model
 model = joblib.load("food_delivery_time _prediction_xgb_model.pkl")
 
-# Load encoders
-encoders = joblib.load("label_encoder_food_deliverytime_prediction.pkl")
-
 st.title("🍔 Food Delivery Time Prediction")
 
-st.write("Enter delivery details to predict delivery time.")
+st.write("Enter delivery details to estimate delivery time.")
 
 # Inputs
 age = st.number_input("Delivery Person Age", min_value=18, max_value=60, value=25)
@@ -39,9 +37,23 @@ vehicle_options = ["Motorcycle", "Scooter", "Electric Scooter", "Bicycle"]
 order_type = st.selectbox("Type of Order", order_options)
 vehicle_type = st.selectbox("Type of Vehicle", vehicle_options)
 
-# Encode categorical variables
-order_encoded = encoders["Type_of_order"].transform([order_type])[0]
-vehicle_encoded = encoders["Type_of_vehicle"].transform([vehicle_type])[0]
+# Manual Encoding (same as training)
+order_map = {
+    "Snack": 0,
+    "Meal": 1,
+    "Drinks": 2,
+    "Buffet": 3
+}
+
+vehicle_map = {
+    "Motorcycle": 0,
+    "Scooter": 1,
+    "Electric Scooter": 2,
+    "Bicycle": 3
+}
+
+order_encoded = order_map[order_type]
+vehicle_encoded = vehicle_map[vehicle_type]
 
 # Prediction
 if st.button("Predict Delivery Time"):
@@ -56,6 +68,13 @@ if st.button("Predict Delivery Time"):
     prediction = model.predict(input_data)
 
     st.success(f"⏱ Estimated Delivery Time: {prediction[0]:.2f} minutes")
+```
+
+
+
+
+
+
 
 
 
