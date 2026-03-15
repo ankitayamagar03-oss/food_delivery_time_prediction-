@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1JI6j1fesHEifI8vVsGjCHAmnt34NvMxp
     """
 
-```python
 import streamlit as st
 import pandas as pd
 import joblib
@@ -68,7 +67,7 @@ if st.button("Predict Delivery Time"):
     prediction = model.predict(input_data)
 
     st.success(f"⏱ Estimated Delivery Time: {prediction[0]:.2f} minutes")
-```
+
 
 
 
