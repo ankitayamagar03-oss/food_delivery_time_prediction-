@@ -46,7 +46,7 @@ if st.button("Predict Delivery Time"):
     prediction = model.predict(input_data)
 
     st.success(f"⏱ Estimated Delivery Time: {prediction[0]:.2f} minutes")
-```
+
 
 
 
